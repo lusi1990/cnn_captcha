@@ -57,7 +57,7 @@ def main():
         sample_conf = json.load(f)
 
     # 配置相关参数
-    test_file = "sample/test/0001_15430304076164024.png"  # 测试识别的图片路径
+    test_file = "sample/test/0ia1_15966795229601915.png"  # 测试识别的图片路径
     save_path = sample_conf["local_image_dir"]  # 保存的地址
     image_suffix = sample_conf["image_suffix"]  # 文件后缀
     for i in range(20000):

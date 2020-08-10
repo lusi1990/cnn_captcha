@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 import json
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
 import matplotlib.pyplot as plt
 import time
@@ -9,6 +8,17 @@ from PIL import Image
 import random
 import os
 from cnnlib.network import CNN
+
+tf.disable_v2_behavior()
+
+
+# gpus = tf.config.experimental.list_physical_devices('GPU')
+# if gpus:
+#     try:
+#         tf.config.experimental.set_virtual_device_configuration(gpus[0], [
+#             tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024)])
+#     except RuntimeError as e:
+#         print(e)
 
 
 class TrainError(Exception):
@@ -178,8 +188,10 @@ class TrainModel(CNN):
                 if step % 10 == 0:
                     # 基于训练集的测试
                     batch_x_test, batch_y_test = self.get_batch(i, size=self.train_batch_size)
-                    acc_char = sess.run(accuracy_char_count, feed_dict={self.X: batch_x_test, self.Y: batch_y_test, self.keep_prob: 1.})
-                    acc_image = sess.run(accuracy_image_count, feed_dict={self.X: batch_x_test, self.Y: batch_y_test, self.keep_prob: 1.})
+                    acc_char = sess.run(accuracy_char_count,
+                                        feed_dict={self.X: batch_x_test, self.Y: batch_y_test, self.keep_prob: 1.})
+                    acc_image = sess.run(accuracy_image_count,
+                                         feed_dict={self.X: batch_x_test, self.Y: batch_y_test, self.keep_prob: 1.})
                     print("第{}次训练 >>> ".format(step))
                     print("[训练集] 字符准确率为 {:.5f} 图片准确率为 {:.5f} >>> loss {:.10f}".format(acc_char, acc_image, cost_))
 
@@ -188,8 +200,10 @@ class TrainModel(CNN):
 
                     # 基于验证集的测试
                     batch_x_verify, batch_y_verify = self.get_verify_batch(size=self.test_batch_size)
-                    acc_char = sess.run(accuracy_char_count, feed_dict={self.X: batch_x_verify, self.Y: batch_y_verify, self.keep_prob: 1.})
-                    acc_image = sess.run(accuracy_image_count, feed_dict={self.X: batch_x_verify, self.Y: batch_y_verify, self.keep_prob: 1.})
+                    acc_char = sess.run(accuracy_char_count,
+                                        feed_dict={self.X: batch_x_verify, self.Y: batch_y_verify, self.keep_prob: 1.})
+                    acc_image = sess.run(accuracy_image_count,
+                                         feed_dict={self.X: batch_x_verify, self.Y: batch_y_verify, self.keep_prob: 1.})
                     print("[验证集] 字符准确率为 {:.5f} 图片准确率为 {:.5f} >>> loss {:.10f}".format(acc_char, acc_image, cost_))
 
                     # with open("loss_test.csv", "a+") as f:
@@ -271,4 +285,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    print(TrainModel.gen_captcha_text_image('./sample/test', '0qmd_1596704404350938.png'))
