@@ -12,15 +12,6 @@ from cnnlib.network import CNN
 tf.disable_v2_behavior()
 
 
-# gpus = tf.config.experimental.list_physical_devices('GPU')
-# if gpus:
-#     try:
-#         tf.config.experimental.set_virtual_device_configuration(gpus[0], [
-#             tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024)])
-#     except RuntimeError as e:
-#         print(e)
-
-
 class TrainError(Exception):
     pass
 
@@ -277,7 +268,15 @@ def main():
         # 设置以下环境变量可开启CPU识别
         os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
         os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-
+    else:
+        # 如果
+        gpus = tf.config.experimental.list_physical_devices('GPU')
+        if gpus:
+            try:
+                tf.config.experimental.set_virtual_device_configuration(gpus[0], [
+                    tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024 * 4)])
+            except RuntimeError as e:
+                print(e)
     tm = TrainModel(train_image_dir, verify_image_dir, char_set, model_save_dir, cycle_stop, acc_stop, cycle_save,
                     image_suffix, train_batch_size, test_batch_size, verify=False)
     tm.train_cnn()  # 开始训练模型
